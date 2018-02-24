@@ -5,9 +5,9 @@ provider:
   runtime: nodejs6.10
   region: us-west-2
   environment:
-    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
-    SQS_QUEUE: ${self:service}-${opt:stage, self:provider.stage}-messages
-    SQS_QUEUE_URL: https://sqs.us-west-2.amazonaws.com/398722583859/${self:service}-${opt:stage, self:provider.stage}-messages
+    DYNAMODB_TABLE: ${self:custom.dynamodb}
+    SQS_QUEUE: ${self:custom.sqs}
+    SQS_QUEUE_URL: https://sqs.us-west-2.amazonaws.com/398722583859/${self:custom.sqs}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -18,6 +18,11 @@ provider:
       Action:
         - sqs:SendMessage
       Resource: arn:aws:sqs:*:*:${self:custom.sqs}
+
+custom:
+  prefix: ${self:service}-${opt:stage, self:provider.stage}
+  dynamodb: ${self:custom.prefix}
+  sqs: ${self:custom.prefix}-messages
 
 functions:
   createRecord:

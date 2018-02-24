@@ -56,7 +56,7 @@ module.exports.createRecord = (event, context, callback) => {
     }
 
     // Send message to SQS
-    const params = {
+    const sqsParams = {
       MessageBody: 'New images to process',
       QueueUrl: process.env.SQS_QUEUE_URL,
       DelaySeconds: 0,
@@ -67,12 +67,12 @@ module.exports.createRecord = (event, context, callback) => {
         },
         "styleUrl": {
           DataType: "String",
-          StrinValue: params.item.styleUrl
+          StringValue: params.Item.styleUrl
         }
       }
     };
 
-    sqs.sendMessage(params, (err, sqsData) => {
+    sqs.sendMessage(sqsParams, (err, sqsData) => {
       if (err) {
         // TODO: Maybe update the dynamodb item status for error?
         console.error(error);
