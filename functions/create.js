@@ -4,6 +4,7 @@ const uuidv4 = require('uuid/v4');
 const AWS = require('aws-sdk');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const sqs = new AWS.SQS();
 
 const defaultResponse = {
   headers: {
@@ -54,11 +55,43 @@ module.exports.createRecord = (event, context, callback) => {
       return;
     }
 
-    const response = Object.assign({}, defaultResponse, {
-      statusCode: 200,
-      body: JSON.stringify(params.Item)
-    });
+    // Send message to SQS
+    const params = {
+      MessageBody: 'New images to process',
+      QueueUrl: process.env.SQS_QUEUE_URL,
+      DelaySeconds: 0,
+      MessageAttributes: {
+        "contentUrl": {
+          DataType: "String",
+          StringValue: params.Item.contentUrl
+        },
+        "styleUrl": {
+          DataType: "String",
+          StrinValue: params.item.styleUrl
+        }
+      }
+    };
 
-    callback(null, response);
+    sqs.sendMessage(params, (err, sqsData) => {
+      if (err) {
+        // TODO: Maybe update the dynamodb item status for error?
+        console.error(error);
+        const response = Object.assign({}, defaultResponse, {
+          statusCode: err.statusCode || 500,
+          body: JSON.stringify({ error: err.message || 'Couldnt send message to SQS' })
+        });
+        callback(null, response);
+        return;
+      }
+
+      console.log("Successfully added to SQS: ", sqsData.messageId);
+
+      const response = Object.assign({}, defaultResponse, {
+        statusCode: 200,
+        body: JSON.stringify(params.Item)
+      });
+
+      callback(null, response);
+    });
   });
 };
