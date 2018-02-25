@@ -5,3 +5,5 @@ This app is based on a serverless AWS infrastructure, the goal is to provide a w
 The infrastructure can be seen in the following diagram:
 
 ![arch](architecture.png)
+
+The worker lives in [this repository](https://github.com/Carlows/styled-worker).
