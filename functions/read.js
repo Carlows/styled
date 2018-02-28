@@ -24,7 +24,7 @@ module.exports.fetchRecords = (event, context, callback) => {
     const response = Object.assign({}, defaultResponse, {
       statusCode: '200',
       body: JSON.stringify({ items: data.Items })
-    });;
+    });
 
     callback(null, response);
   });
