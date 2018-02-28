@@ -13,6 +13,7 @@ provider:
       Action:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
+        - dynamodb:Scan
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
     - Effect: Allow
       Action:
@@ -36,6 +37,18 @@ functions:
       - http:
           path: records
           method: post
+          cors: true
+  fetchRecords:
+    handler: functions/read.fetchRecords
+    name: ${self:provider.stage}-fetchRecords
+    description: Reads the current records stored in DynamoDB
+    memorySize: 512
+    timeout: 10
+    reservedConcurrency: 5
+    events:
+      - http:
+          path: records
+          method: get
           cors: true
 
 resources:
