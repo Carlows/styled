@@ -36,7 +36,7 @@ module.exports.createRecord = (event, context, callback) => {
     TableName: process.env.DYNAMODB_TABLE,
     Item: {
       id: uuidv4(),
-      status: 'PROCESSING',
+      recordStatus: 'PROCESSING',
       contentUrl: data.contentUrl,
       styleUrl: data.styleUrl,
       createdAt: timestamp,
