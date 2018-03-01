@@ -7,3 +7,17 @@ The infrastructure can be seen in the following diagram:
 ![arch](architecture.png)
 
 The worker lives in [this repository](https://github.com/Carlows/styled-worker).
+
+## Dev
+
+### Deploy
+
+```
+serverless deploy -v
+```
+
+### Running Functions from cli
+
+```
+serverless invoke -f functionName -l
+```

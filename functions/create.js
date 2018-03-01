@@ -68,6 +68,10 @@ module.exports.createRecord = (event, context, callback) => {
         "styleUrl": {
           DataType: "String",
           StringValue: params.Item.styleUrl
+        },
+        recordId: {
+          DataType: "String",
+          StringValue: params.Item.id
         }
       }
     };
